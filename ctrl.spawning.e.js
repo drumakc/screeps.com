@@ -1,5 +1,3 @@
-
-
 module.exports = function(roomName) {
     let swn = Game.spawns[roomName + '_e'];
     let creepName = 'e' + Game.time;
