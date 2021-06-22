@@ -15,7 +15,7 @@ module.exports = function() {
             }
             
             for (let i in harvesters) {
-                energyCanHarvested += harvesters[i].getActiveBodyparts(WORK) * 2 * 300;
+                energyCanHarvested += harvesters[i].getActiveBodyparts(WORK) * 100;
             }
             
             if (energyInSources > energyCanHarvested) {
