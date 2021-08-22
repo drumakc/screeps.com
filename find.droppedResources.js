@@ -1,12 +1,10 @@
-module.exports = function(creep) {
-    let targets = creep.room.find(FIND_SOURCES_ACTIVE);
+module.exports = function (creep) {
+    let targets = creep.pos.findInRange(FIND_DROPPED_RESOURCES, 10);
     
     if (targets.length > 0) {
         creep.memory.targetForDownload = creep.pos.findClosestByPath(targets);
-        //creep.say('srcActive+');
         return true;
     } else {
-        //creep.say('srcActive-');
         return false;
     }
-}
+};

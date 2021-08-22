@@ -6,6 +6,7 @@ module.exports = function (creep, resourceType) {
             if (target) {
                 if (target.store.getFreeCapacity(resourceType) > 0) {
                     if (creep.transfer(target, resourceType) == OK) {
+                        delete creep.memory.targetForUpload;
                         return true;
                     } else if (creep.transfer(target, resourceType) == ERR_NOT_IN_RANGE) {
                         creep.moveTo(target);
@@ -15,11 +16,11 @@ module.exports = function (creep, resourceType) {
                         return false;
                     }
                 } else {
-                    creep.memory.targetForUpload = false;
+                    delete creep.memory.targetForUpload;
                     return false;
                 }
             } else {
-                creep.memory.targetForUpload = false;
+                delete creep.memory.targetForUpload;
                 return false;
             }
         } else {

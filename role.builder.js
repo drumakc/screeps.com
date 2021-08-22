@@ -13,7 +13,10 @@ module.exports = function (creep) {
                 }
                 break;
             case 'upload':
-                if (creep.store.getUsedCapacity() > 0) {
+                if (creep.store[RESOURCE_ENERGY] == 0) {
+                    creep.say('b↑->b↓');
+                    creep.memory.order = 'download';
+                } else {
                     if (creep.memory.targetForBuilding) {
                         let target = Game.getObjectById(creep.memory.targetForBuilding.id);
                         
@@ -36,8 +39,6 @@ module.exports = function (creep) {
                             creep.memory.role = 'upgrader';
                         }
                     }
-                } else {
-                    creep.memory.order = 'download';
                 }
                 break;
         }
