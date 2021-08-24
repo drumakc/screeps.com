@@ -39,6 +39,18 @@ module.exports = function() {
                 let minerals = Game.rooms[roomName].find(FIND_MINERALS);
                 Memory.rooms[roomName].mineral = minerals[0];
             } 
+            
+            if (Memory.rooms[roomName].extractor) {
+                
+            } else {
+                let extractors = Game.rooms[roomName].find(FIND_MY_STRUCTURES, {filter: (obj) => {
+                    return obj.structureType == STRUCTURE_EXTRACTOR
+                }});
+                
+                if (extractors.length > 0) {
+                    Memory.rooms[roomName].extractor = extractors[0];
+                }
+            }
         }
     } else {
         Memory.rooms = {};
@@ -60,5 +72,11 @@ module.exports = function() {
         }
     } else {
         Memory.towers = {};
+    }
+    
+    if (Memory.calcTransactionCost) {
+        
+    } else {
+        Memory.calcTransactionCost = 1000;
     }
 }

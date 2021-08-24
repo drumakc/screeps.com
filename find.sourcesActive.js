@@ -3,10 +3,9 @@ module.exports = function(creep) {
     
     if (targets.length > 0) {
         creep.memory.targetForDownload = creep.pos.findClosestByPath(targets);
-        //creep.say('srcActive+');
+        
         return true;
     } else {
-        //creep.say('srcActive-');
         return false;
     }
 }

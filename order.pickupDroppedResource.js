@@ -12,11 +12,11 @@ module.exports = function (creep) {
                 return false;
             }
         } else {
-            delete creep.memory.targetForDownload;
+            creep.memory.targetForDownload = false;
             return false;
         }
     } else {
-        delete creep.memory.order;
+        creep.memory.order = false;
         return false;
     }
 };

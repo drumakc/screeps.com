@@ -1,4 +1,5 @@
 const roleBuilder = require('role.builder');
+const roleCourier = require('role.courier');
 const roleHarvester = require('role.harvester');
 const roleMiner = require('role.miner');
 const roleUpgrader = require('role.upgrader');
@@ -10,6 +11,9 @@ module.exports = function() {
             switch (Game.creeps[creepName].memory.role) {
                 case 'builder':
                     roleBuilder(Game.creeps[creepName]);
+                    break;
+                case 'courier':
+                    roleCourier(Game.creeps[creepName]);
                     break;
                 case 'harvester':
                     roleHarvester(Game.creeps[creepName]);
@@ -25,9 +29,6 @@ module.exports = function() {
                     break;
                 default:
                     Game.creeps[creepName].say('role=default');
-                    if (Game.creeps[creepName].getActiveBodyparts(WORK) > 0) {
-                        Game.creeps[creepName].memory.role = 'harvester';
-                    }
                     break;
             }
         } else {

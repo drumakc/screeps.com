@@ -1,5 +1,5 @@
 module.exports = function (creep) {
-    let targets = creep.pos.findInRange(FIND_DROPPED_RESOURCES, 10);
+    let targets = creep.room.find(FIND_DROPPED_RESOURCES);
     
     if (targets.length > 0) {
         creep.memory.targetForDownload = creep.pos.findClosestByPath(targets);

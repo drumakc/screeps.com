@@ -1,6 +1,9 @@
 
 module.exports = function() {
-    Memory.calcTransactionCost+=1000;
+    if (Memory.calcTransactionCost < 5000) {
+        Memory.calcTransactionCost+=100;
+    }
+    
     console.log('ctrl.market = Memory.calcTransactionCost = ' + Memory.calcTransactionCost);
     for (var roomName in Game.rooms) {
         if (Game.rooms[roomName].terminal) {
@@ -39,7 +42,7 @@ module.exports = function() {
                                         ' продал ' + resourceType + 
                                         ' по цене ' + buyOrders[0].price + ' кредитов.'
                                     );
-                                    Memory.calcTransactionCost = 30000;
+                                    Memory.calcTransactionCost = 100;
                                 }
                             }
                         }

@@ -1,5 +1,7 @@
+const ctrlSpawningC = require('ctrl.spawning.c');
 const ctrlSpawningE = require('ctrl.spawning.e');
 const ctrlSpawningM = require('ctrl.spawning.m');
+const roomNeedMiner = require('room.needMiner');
 
 
 module.exports = function() {
@@ -9,7 +11,7 @@ module.exports = function() {
             let energyInSources = 0;
             let energyCanHarvested = 0;
     
-            let harvesters = Game.rooms[roomName].find(FIND_MY_CREEPS, {filter: (obj) => {return obj.memory.role = 'harvester'}});
+            let harvesters = Game.rooms[roomName].find(FIND_MY_CREEPS, {filter: (obj) => {return obj.memory.role == 'harvester'}});
     
             if (harvesters.length > 0) {
     
@@ -31,24 +33,20 @@ module.exports = function() {
         
         //Spawn mineralminer. Creep harvest and manage mineral.
         if (Game.spawns[roomName + '_m']) {
-            let extractors = Game.rooms[roomName].find(FIND_MY_STRUCTURES, {filter: (obj) => {
-                return obj.structureType == STRUCTURE_EXTRACTOR
+            if (roomNeedMiner(roomName)) {
+                ctrlSpawningM(roomName);
+            }
+        }
+        
+        //Spawn courier. Creep pickup dropped resources, take resources from tombstones, delivery energy to structures,
+        //manage mineral in labs, terminal, storage, facility.
+        if (Game.rooms[roomName].controller.level > 3) {
+            let couriers = Game.rooms[roomName].find(FIND_MY_CREEPS, {filter: (obj) => {
+                return obj.memory.role == 'courier'
             }});
             
-            if (extractors.length > 0) {
-                if (Game.rooms[roomName].storage.store.getFreeCapacity() > 0 || Game.rooms[roomName].terminal.store.getFreeCapacity() > 0) {
-                    let mineral = Game.getObjectById(Memory.rooms[roomName].mineral.id);
-                    
-                    if (mineral.mineralAmount > 0) {
-                        let miners = Game.rooms[roomName].find(FIND_MY_CREEPS, {filter: (obj) => {
-                            return obj.memory.role == 'miner'
-                        }});
-                        
-                        if (miners.length < 1) {
-                            ctrlSpawningM(roomName);
-                        }
-                    }
-                }
+            if (couriers.length == 0) {
+                ctrlSpawningC(roomName);
             }
         }
     }

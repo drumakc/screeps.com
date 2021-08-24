@@ -5,7 +5,6 @@ module.exports = function (creep) {
         }
     });
     
-    creep.say(targets.length);
     if (targets.length > 0) {
         creep.memory.targetForDownload = creep.pos.findClosestByPath(targets);
         return true;

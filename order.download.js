@@ -11,6 +11,8 @@ module.exports = function (creep, resourceType) {
                 if (resourceType) {
                     if (creep.withdraw(target, resourceType) == OK) {
                         creep.memory.targetForDownload = false;
+                        creep.memory.order = 'upload';
+                        creep.say('h↑');
                         return true;
                     } else if (creep.withdraw(target, resourceType) == ERR_NOT_IN_RANGE) {
                         creep.moveTo(target);

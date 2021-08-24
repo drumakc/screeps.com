@@ -13,7 +13,15 @@ module.exports = function (creep, resourceType) {
                         return true;
                     } else {
                         creep.say('err ' + creep.transfer(target, resourceType));
-                        return false;
+                        
+                        for (let i in creep.store) {
+                            if (creep.transfer(target, i) == OK) {
+                                return true;
+                            } else {
+                                creep.drop(i);
+                                return false;
+                            }
+                        }
                     }
                 } else {
                     delete creep.memory.targetForUpload;

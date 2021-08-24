@@ -1,15 +1,12 @@
 const findConstructionSites = require('find.constructionSites');
-const findDroppedResources = require('find.droppedResources');
 const findEmptyContainer = require('find.emptyContainer');
 const findEmptyLink = require('find.emptyLink');
 const findEmptyStructure = require('find.emptyStructure');
 const findEmptyTower = require('find.emptyTower');
 const findEnergyInContainer = require('find.energyInContainer');
 const findSourcesActive = require('find.sourcesActive');
-const findTombstone = require('find.tombstone');
 const orderDownload = require('order.download');
 const orderHarvestEnergy = require('order.harvestEnergy');
-const orderPickupDroppedResource = require('order.pickupDroppedResource');
 const orderUpload = require('order.upload');
 const roomHaveEnergy = require('room.haveEnergy');
 
@@ -20,13 +17,7 @@ module.exports = function(creep) {
                 creep.memory.order = 'upload';
                 creep.say('h↑');
             } else {
-                //creep.say('h↓');
-                
-                if (findDroppedResources(creep)) {
-                    creep.memory.order = 'pickupDroppedResource';
-                } else if (findTombstone(creep)) {
-                    creep.memory.order = 'downloadFromTarget';
-                } else if (findSourcesActive(creep)) {
+                if (findSourcesActive(creep)) {
                     creep.memory.order = 'harvestEnergy';
                 } else if (findEnergyInContainer(creep)) {
                     creep.memory.order = 'downloadFromTarget';
@@ -40,25 +31,46 @@ module.exports = function(creep) {
                 creep.memory.order = 'download';
                 creep.say('h↓');
             } else {
-                //creep.say('h↑');
-                
                 if (creep.memory.targetForUpload) {
-                    orderUpload(creep, RESOURCE_ENERGY);
-                } else {
-                    if (findEmptyContainer(creep)) {
+                    if (creep.store[RESOURCE_ENERGY]) {
                         orderUpload(creep, RESOURCE_ENERGY);
-                    } else if (findEmptyStructure(creep, STRUCTURE_EXTENSION)) {
-                        orderUpload(creep, RESOURCE_ENERGY);
-                    } else if (findEmptyStructure(creep, STRUCTURE_SPAWN)) {
-                        orderUpload(creep, RESOURCE_ENERGY);
-                    } else if (findEmptyTower(creep)) {
-                        orderUpload(creep, RESOURCE_ENERGY);
-                    } else if (findEmptyLink(creep)) {
-                        orderUpload(creep, RESOURCE_ENERGY);
-                    } else if (findConstructionSites(creep)) {
-                        creep.memory.role = 'builder';
                     } else {
-                        creep.memory.role = 'upgrader';
+                        for (let resource in creep.store) {
+                            orderUpload(creep, resource);
+                        }
+                    }
+                } else {
+                    if (creep.store[RESOURCE_ENERGY]) {
+                        if (findEmptyContainer(creep)) {
+                            orderUpload(creep, RESOURCE_ENERGY);
+                        } else if (findEmptyStructure(creep, STRUCTURE_EXTENSION)) {
+                            orderUpload(creep, RESOURCE_ENERGY);
+                        } else if (findEmptyStructure(creep, STRUCTURE_SPAWN)) {
+                            orderUpload(creep, RESOURCE_ENERGY);
+                        } else if (findEmptyTower(creep)) {
+                            orderUpload(creep, RESOURCE_ENERGY);
+                        } else if (findEmptyLink(creep)) {
+                            orderUpload(creep, RESOURCE_ENERGY);
+                        } else if (creep.room.terminal.store[RESOURCE_ENERGY] < 30000) {
+                            creep.memory.targetForUpload = creep.room.terminal;
+                            orderUpload(creep, RESOURCE_ENERGY);
+                        } else if (findConstructionSites(creep)) {
+                            creep.memory.role = 'builder';
+                        } else {
+                            creep.memory.role = 'upgrader';
+                        }
+                    } else {
+                        if (creep.room.terminal) {
+                            if (creep.room.terminal.store.getFreeCapacity() > 0) {
+                                creep.memory.targetForUpload = creep.room.terminal;
+                            }
+                        } else if (creep.room.storage) {
+                            if (creep.room.storage.store.getFreeCapacity() > 0) {
+                                creep.memory.targetForUpload = creep.room.storage;
+                            }
+                        } else {
+                            creep.say('!3space');
+                        }
                     }
                 }
             }
@@ -69,18 +81,16 @@ module.exports = function(creep) {
                 delete creep.memory.order;
             }
         } else if (creep.memory.order == 'harvestEnergy') {
-            if (orderHarvestEnergy(creep)) {
-                    
-            } else if (findEnergyInContainer(creep)) {
-                creep.memory.order = 'downloadFromTarget';
+            if (creep.getActiveBodyparts(WORK) > 0) {
+                if (orderHarvestEnergy(creep)) {
+                        
+                } else if (findEnergyInContainer(creep)) {
+                    creep.memory.order = 'downloadFromTarget';
+                } else {
+                    creep.say('h↓ err');
+                }
             } else {
-                //creep.say('h↓ err');
-            }
-        } else if (creep.memory.order == 'pickupDroppedResource') {
-            if (orderPickupDroppedResource(creep)) {
-                
-            } else {
-                delete creep.memory.targetForDownload;
+                creep.memory.order = false;
             }
         } else {
             creep.memory = false;

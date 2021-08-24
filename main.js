@@ -1,5 +1,6 @@
 const ctrlCreeps = require('ctrl.creeps');
 const ctrlDefense = require('ctrl.defense');
+const ctrlMarket = require('ctrl.market');
 const ctrlMemory = require('ctrl.memory');
 const ctrlSpawning = require('ctrl.spawning');
 const ctrlTowers = require('ctrl.towers');
@@ -16,6 +17,10 @@ module.exports.loop = function () {
         
         if (Game.time % 49 == 0 && Game.cpu.bucket > 100) {
             ctrlSpawning();
+        }
+        
+        if (Game.time % 999 == 0 && Game.cpu.bucket > 999) {
+            ctrlMarket();
         }
         
         if (Game.cpu.bucket == 10000) {
