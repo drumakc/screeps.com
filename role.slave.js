@@ -1,9 +1,10 @@
-//учу определять может ли дойти до цели
-const orderHarvestEnergy = require('order.harvestEnergy');
+//учу идти от флага к флагу
+const orderMoveToFlag = require('order.moveToFlag');
 
 module.exports = function (creep) {
-    let origin = creep.pos;
-    let goal = Game.getObjectById('612392867cdaa113a559c206');
-    
-    creep.moveTo(goal);
+    if (orderMoveToFlag(creep)) {
+        
+    } else {
+        creep.say('stop');
+    }
 };
