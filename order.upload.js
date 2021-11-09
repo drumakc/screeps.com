@@ -7,6 +7,7 @@ module.exports = function (creep, resourceType) {
                 if (target.store.getFreeCapacity(resourceType) > 0) {
                     if (creep.transfer(target, resourceType) == OK) {
                         delete creep.memory.targetForUpload;
+                        creep.memory.order = 'download';
                         return true;
                     } else if (creep.transfer(target, resourceType) == ERR_NOT_IN_RANGE) {
                         creep.moveTo(target);

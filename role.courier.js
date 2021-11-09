@@ -49,9 +49,19 @@ module.exports = function (creep) {
                                 orderUpload(creep, RESOURCE_ENERGY);
                             } else if (findEmptyLink(creep)) {
                                 orderUpload(creep, RESOURCE_ENERGY);
-                            } else if (creep.room.terminal.store[RESOURCE_ENERGY] < 30000) {
-                                creep.memory.targetForUpload = creep.room.terminal;
-                                orderUpload(creep, RESOURCE_ENERGY);
+                            } else if (creep.room.terminal) {
+                                if (creep.room.terminal.store[RESOURCE_ENERGY] < 30000) {
+                                    creep.memory.targetForUpload = creep.room.terminal;
+                                    orderUpload(creep, RESOURCE_ENERGY);
+                                } else if (findEmptyStructure(creep, STRUCTURE_TOWER)) {
+                                    orderUpload(creep, RESOURCE_ENERGY);
+                                } else if (findEmptyStructure(creep, STRUCTURE_LINK)) {
+                                    orderUpload(creep, RESOURCE_ENERGY);
+                                } else if (findEmptyStructure(creep, STRUCTURE_STORAGE)) {
+                                    orderUpload(creep, RESOURCE_ENERGY);
+                                } else {
+                                    creep.say('.zZ');
+                                }
                             } else if (findEmptyStructure(creep, STRUCTURE_TOWER)) {
                                 orderUpload(creep, RESOURCE_ENERGY);
                             } else if (findEmptyStructure(creep, STRUCTURE_LINK)) {
@@ -65,6 +75,10 @@ module.exports = function (creep) {
                             if (creep.room.terminal) {
                                 if (creep.room.terminal.store.getFreeCapacity() > 0) {
                                     creep.memory.targetForUpload = creep.room.terminal;
+                                } else if (creep.room.storage) {
+                                    if (creep.room.storage.store.getFreeCapacity() > 0) {
+                                        creep.memory.targetForUpload = creep.room.storage;
+                                    }
                                 }
                             } else if (creep.room.storage) {
                                 if (creep.room.storage.store.getFreeCapacity() > 0) {

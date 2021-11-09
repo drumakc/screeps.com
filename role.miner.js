@@ -35,6 +35,10 @@ module.exports = function (creep) {
                         if (creep.room.terminal) {
                             if (creep.room.terminal.store.getFreeCapacity() > 0) {
                                 creep.memory.targetForUpload = creep.room.terminal;
+                            } else if (creep.room.storage) {
+                                if (creep.room.storage.store.getFreeCapacity() > 0) {
+                                    creep.memory.targetForUpload = creep.room.storage;
+                                }
                             }
                         } else if (creep.room.storage) {
                             if (creep.room.storage.store.getFreeCapacity() > 0) {

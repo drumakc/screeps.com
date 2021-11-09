@@ -1,3 +1,4 @@
+const ctrlMemory = require('ctrl.memory');
 const findConstructionSites = require('find.constructionSites');
 const findSourcesActive = require('find.sourcesActive');
 const orderHarvestEnergy = require('order.harvestEnergy');
@@ -29,10 +30,29 @@ module.exports = function (creep) {
                                 creep.say('b err=' + creep.build(target));
                             }
                         } else {
+                            ctrlMemory();
                             creep.memory.targetForBuilding = false;
                         }
                     } else {
                         if (findConstructionSites(creep)) {
+                            if (creep.memory.targetForBuilding) {
+                                let target = Game.getObjectById(creep.memory.targetForBuilding.id);
+                        
+                                if (target) {
+                                    if (creep.build(target) == OK) {
+                                        creep.say('🏗️');
+                                    } else if (creep.build(target) == ERR_NOT_IN_RANGE) {
+                                        creep.moveTo(target);
+                                    } else {
+                                        creep.say('b err=' + creep.build(target));
+                                    }
+                                } else {
+                                    ctrlMemory();
+                                    creep.memory.targetForBuilding = false;
+                                }
+                            } else {
+                                delete creep.memory.targetForBuilding;
+                            }
                             
                         } else {
                             creep.memory = false;
@@ -41,12 +61,19 @@ module.exports = function (creep) {
                     }
                 }
                 break;
+            default:
+                if (creep.store[RESOURCE_ENERGY] == 0) {
+                    creep.memory.order = 'download';
+                } else {
+                    creep.memory.order = 'upload';
+                }
+                break;
         }
     } else {
         if (creep.store[RESOURCE_ENERGY] == 0) {
-            creep.memory.order == 'download';
+            creep.memory.order = 'download';
         } else {
-            creep.memory.order == 'upload';
+            creep.memory.order = 'upload';
         }
     }
 };

@@ -1,6 +1,6 @@
 
 module.exports = function() {
-    if (Memory.calcTransactionCost < 5000) {
+    if (Memory.calcTransactionCost < 10000) {
         Memory.calcTransactionCost+=100;
     }
     

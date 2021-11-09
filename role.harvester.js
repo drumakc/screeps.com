@@ -51,9 +51,15 @@ module.exports = function(creep) {
                             orderUpload(creep, RESOURCE_ENERGY);
                         } else if (findEmptyLink(creep)) {
                             orderUpload(creep, RESOURCE_ENERGY);
-                        } else if (creep.room.terminal.store[RESOURCE_ENERGY] < 30000) {
-                            creep.memory.targetForUpload = creep.room.terminal;
-                            orderUpload(creep, RESOURCE_ENERGY);
+                        } else if (creep.room.terminal) {
+                            if (creep.room.terminal.store[RESOURCE_ENERGY] < 30000) {
+                                creep.memory.targetForUpload = creep.room.terminal;
+                                orderUpload(creep, RESOURCE_ENERGY);
+                            } else if (findConstructionSites(creep)) {
+                                creep.memory.role = 'builder';
+                            } else {
+                                creep.memory.role = 'upgrader';
+                            }
                         } else if (findConstructionSites(creep)) {
                             creep.memory.role = 'builder';
                         } else {

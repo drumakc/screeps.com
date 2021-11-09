@@ -7,25 +7,27 @@ const roomNeedMiner = require('room.needMiner');
 module.exports = function() {
     for (let roomName in Game.rooms) { 
         //Spawn harvester-builder-upgrader. Creep manage energy.
-        if (Game.rooms[roomName].find(FIND_MY_CREEPS).length < 16) {
+        if (Game.rooms[roomName].find(FIND_MY_CREEPS).length < 8) {
             let energyInSources = 0;
             let energyCanHarvested = 0;
     
             let harvesters = Game.rooms[roomName].find(FIND_MY_CREEPS, {filter: (obj) => {return obj.memory.role == 'harvester'}});
     
             if (harvesters.length > 0) {
-    
-                for (let i in Memory.rooms[roomName].sources) {
-                    energyInSources += Game.getObjectById(Memory.rooms[roomName].sources[i].id).energy;
+                if (Memory.rooms[roomName].sources) {
+                    for (let i in Memory.rooms[roomName].sources) {
+                        energyInSources += Game.getObjectById(Memory.rooms[roomName].sources[i].id).energy;
+                    }
+                    
+                    for (let i in harvesters) {
+                        energyCanHarvested += harvesters[i].getActiveBodyparts(WORK) * 100;
+                    }
+                    
+                    if (energyInSources > energyCanHarvested / 2) {
+                        ctrlSpawningE(roomName);
+                    }
                 }
                 
-                for (let i in harvesters) {
-                    energyCanHarvested += harvesters[i].getActiveBodyparts(WORK) * 100;
-                }
-                
-                if (energyInSources > energyCanHarvested / 2) {
-                    ctrlSpawningE(roomName);
-                }
             } else {
                 ctrlSpawningE(roomName);
             }
@@ -40,13 +42,15 @@ module.exports = function() {
         
         //Spawn courier. Creep pickup dropped resources, take resources from tombstones, delivery energy to structures,
         //manage mineral in labs, terminal, storage, facility.
-        if (Game.rooms[roomName].controller.level > 3) {
-            let couriers = Game.rooms[roomName].find(FIND_MY_CREEPS, {filter: (obj) => {
-                return obj.memory.role == 'courier'
-            }});
-            
-            if (couriers.length == 0) {
-                ctrlSpawningC(roomName);
+        if (Game.rooms[roomName].controller) {
+            if (Game.rooms[roomName].controller.level > 3) {
+                let couriers = Game.rooms[roomName].find(FIND_MY_CREEPS, {filter: (obj) => {
+                    return obj.memory.role == 'courier'
+                }});
+                
+                if (couriers.length == 0) {
+                    ctrlSpawningC(roomName);
+                }
             }
         }
     }

@@ -4,6 +4,7 @@ module.exports = function (creep) {
         
         if (target) {
             if (creep.pickup(target) == OK) {
+                creep.memory.order = 'upload';
                 return true;
             } else if (creep.pickup(target) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(target);
